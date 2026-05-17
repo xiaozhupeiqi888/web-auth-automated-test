@@ -12,10 +12,9 @@ class TestCustomBlog(unittest.TestCase):
     def setUp(self):
         try:
             os.remove("C:\\MyWork\\myGitHub\\custom-blog\\app.db.bk")
-        except (FileNotFoundError):
+        except:
             pass;
-        shutil.copy("C:\\MyWork\\myGitHub\\custom-blog\\app.db",
-"C:\\MyWork\\myGitHub\\custom-blog\\app.db.bk")
+        shutil.copy("C:\\MyWork\\myGitHub\\custom-blog\\app.db","C:\\MyWork\\myGitHub\\custom-blog\\app.db.bk")
 
     def tearDown(self):
         shutil.copy("C:\\MyWork\\myGitHub\\custom-blog\\app.db.bk", "C:\\MyWork\\myGitHub\\custom-blog\\app.db")
@@ -83,9 +82,8 @@ class TestCustomBlog(unittest.TestCase):
         return result
 
 
-if (__name__ == "__main__"):
+if __name__ == "__main__":
     test = unittest.TestSuite()
-
     methodList = unittest.TestLoader().getTestCaseNames(TestCustomBlog())
     for methodname in methodList:
         if (re.match("test", methodname)):
