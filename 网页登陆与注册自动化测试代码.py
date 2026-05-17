@@ -19,42 +19,42 @@ class TestCustomBlog(unittest.TestCase):
     def tearDown(self):
         shutil.copy("C:\\MyWork\\myGitHub\\custom-blog\\app.db.bk", "C:\\MyWork\\myGitHub\\custom-blog\\app.db")
 
-    def testRegistShouldSuccessGivenNormalInput(self):
+    def testRegistShouldSuccessGivenNormalInput(self):#注册界面，邮箱合法，两次密码相同，预期结果为注册成功
         result = self.getResultByUserPasswd("test2@163.com", "111111")
-        self.assertEqual(200, result.status_code, "status_code should be 200")
+        self.assertEqual(200, result.status_code, "status_code should be 200",f'期望返回code=200，实际返回{result.status_code}')
         soup = BeautifulSoup(result.text, "html.parser")
         returnStr = soup.find_all("li")[0].get_text()
         self.assertRegex(returnStr, "Registered successfully")
 
-    def testRegistShouldFailGivenDuplicateUserAgain(self):
+    def testRegistShouldFailGivenDuplicateUserAgain(self):#注册界面，邮箱合法，两次密码相同，但邮箱已经注册过了，预期结果为注册失败
         result = self.getResultByUserPasswd("test@163.com", "111111")
-        self.assertEqual(200, result.status_code, "status_code should be 200")
+        self.assertEqual(200, result.status_code, "status_code should be 200",f'期望返回code=200，实际返回{result.status_code}')
         soup = BeautifulSoup(result.text, "html.parser")
         returnStr = soup.find_all("li")[0].get_text()
         self.assertRegex(returnStr, "Such user already is avalable")
 
-    def testRegistShouldFailGivenDifferentPassword(self):
+    def testRegistShouldFailGivenDifferentPassword(self):#注册界面，邮箱合法，但两次密码不同，预期结果为注册失败
         result = self.getResultByUserPasswd("test@163.com", "111111", "222222")
-        self.assertEqual(200, result.status_code, "status_code should be 200")
+        self.assertEqual(200, result.status_code, "status_code should be 200",f'期望返回code=200，实际返回{result.status_code}')
         soup = BeautifulSoup(result.text, "html.parser")
         returnStr = soup.find_all("span", attrs={"class": "error"})[0].get_text()
         self.assertRegex(returnStr, "Passwords must match")
 
-    def testLoginShouldSuccessGivenNormalUserAndPassword(self):
+    def testLoginShouldSuccessGivenNormalUserAndPassword(self):#登录界面，邮箱合法，密码正确，预期结果为注册成功
         result = self.getLoginResultByUserPasswd("a_kui@163.com", "111111")
         self.assertEqual(200, result.status_code)
         soup = BeautifulSoup(result.text, "html.parser")
         resultStr = soup.find("li").get_text()
         self.assertRegex(resultStr, "Logged in successfully")
 
-    def testLoginShouldFailedGivenBadPassword(self):
+    def testLoginShouldFailedGivenBadPassword(self):#登录界面，邮箱合法，密码错误，预期结果为注册失败
         result = self.getLoginResultByUserPasswd("a_kui@163.com", "222222")
         self.assertEqual(200, result.status_code)
         soup = BeautifulSoup(result.text, "html.parser")
         resultStr = soup.find("li").get_text()
         self.assertRegex(resultStr, "Wrong credentials")
 
-    def testLoginShouldFailedGivenBadUserEmail(self):
+    def testLoginShouldFailedGivenBadUserEmail(self):#登录界面，邮箱不合法，密码错误，预期结果为注册失败
         result = self.getLoginResultByUserPasswd("abcd", "111111")
         self.assertEqual(200, result.status_code)
         soup = BeautifulSoup(result.text, "html.parser")
